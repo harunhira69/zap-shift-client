@@ -14,6 +14,7 @@ const Navbar = () => {
   }
   const links = <>
      <li><NavLink>Service</NavLink></li>
+     <li><NavLink to='/send-parcel'>Send Parcel</NavLink></li>
      <li><NavLink to='/coverage'>Coverage</NavLink></li>
   
   </>
@@ -46,7 +47,7 @@ const Navbar = () => {
    {
     user? <a onClick={signOut} className="btn">Logout</a>:<Link className='btn' to='/login'>Login</Link>
    }
-   <Link className='btn btn-primary text-black'>Be A Rider</Link>
+   <Link to='/rider' className='btn btn-primary text-black'>Be A Rider</Link>
   </div>
 </div>
     );

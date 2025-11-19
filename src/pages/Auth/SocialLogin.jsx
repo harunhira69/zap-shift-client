@@ -1,10 +1,18 @@
 import React from 'react';
 import useAuth from '../../hook/useAuth';
+import { useLocation, useNavigate } from 'react-router';
 
 const SocialLogin = () => {
     const {handleGoogle} = useAuth()
+    const location = useLocation();
+    const navigate = useNavigate();
     const handleGoogleSignIn = ()=>{
-     handleGoogle().then(res=>console.log(res.user)).catch(err=>console.log(err))
+     handleGoogle()
+     .then((res)=>{
+        console.log(res.user);
+        navigate(location?.state||'/')
+     })
+     .catch(err=>console.log(err))
     }
     return (
         <div className='text-center pb-8'>
