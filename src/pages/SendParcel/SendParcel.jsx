@@ -60,6 +60,8 @@ const receiverRegion = useWatch({
 
             }
         }
+     data.cost = cost;
+
      Swal.fire({
   title: "Agree with cost?",
   text: `you have to pay:${cost} taka`,
