@@ -6,6 +6,7 @@ import useAuth from '../../../hook/useAuth';
 import useAxiosSecue from '../../../hook/useAxiosSecue';
 import { useQuery } from '@tanstack/react-query';
 import Swal from 'sweetalert2';
+import { Link } from 'react-router';
 
 const MyPercel = () => {
     const { user } = useAuth();
@@ -67,6 +68,7 @@ Swal.fire({
                             <th>Name</th>
                             <th>Cost</th>
                             <th>Payment</th>
+                            <th>Delevery Status</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -78,8 +80,15 @@ Swal.fire({
                                     <th>{index + 1}</th>
                                     <td>{parcel.
                                         parcelName}</td>
-                                    <td>{parcel.cost}</td>
-                                    <td>{parcel.color}</td>
+                                {
+                                    parcel.status==='paid'?
+                                    <span className='text-green-500'>Paid</span>:
+                                <Link to={`/dashboard/payment/${parcel._id}`}>
+                          <button className="btn btn-primary text-black">Pay</button>
+                                  </Link>
+
+                                }
+                                  <th>{parcel.deliveryStatus}</th>
                                     <td>
                                         <button className='btn btn-square hover:bg-primary'>
                                        <FaMagnifyingGlass />
