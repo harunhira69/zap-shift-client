@@ -21,6 +21,18 @@ const MyPercel = () => {
         enabled: !!user?.email // prevent query before user loads
     });
 
+    const handlePayment = async (parcel)=>{
+        const paymentInfo = {
+            cost:parcel.cost,
+            parcelId:parcel._id,
+            senderEmail:parcel.senderEmail,
+            parcelName:parcel.parcelName
+        }
+        const res = await axiosSecure.post('/checkout-session',paymentInfo)
+       console.log(res.data.url);
+       window.location.assign(res.data.url);
+    }
+
     const handleDeleted = (id)=>{
         console.log(id);
       
@@ -83,9 +95,12 @@ Swal.fire({
                                 {
                                     parcel.status==='paid'?
                                     <span className='text-green-500'>Paid</span>:
-                                <Link to={`/dashboard/payment/${parcel._id}`}>
-                          <button className="btn btn-primary text-black">Pay</button>
-                                  </Link>
+                              
+                          <button
+                          onClick={()=>handlePayment(parcel)}
+
+                          className="btn btn-primary text-black">Pay</button>
+                                  
 
                                 }
                                   <th>{parcel.deliveryStatus}</th>
