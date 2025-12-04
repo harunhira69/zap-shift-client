@@ -1,6 +1,6 @@
 import React from 'react';
 import { useForm, useWatch } from 'react-hook-form';
-import { useLoaderData } from 'react-router';
+import { useLoaderData, useNavigate } from 'react-router';
 import Swal from 'sweetalert2';
 import useAxiosSecue from '../../hook/useAxiosSecue';
 import useAuth from '../../hook/useAuth';
@@ -15,6 +15,7 @@ const SendParcel = () => {
 
     const axiosSecure = useAxiosSecue();
     const {user}= useAuth();
+    const navigate = useNavigate();
     
 
     const serviceCenters = useLoaderData();
@@ -69,11 +70,21 @@ const receiverRegion = useWatch({
   showCancelButton: true,
   confirmButtonColor: "#3085d6",
   cancelButtonColor: "#d33",
-  confirmButtonText: "Confirm"
+  confirmButtonText: "Confirm and continue pay"
 }).then((result) => {
   if (result.isConfirmed) {
     axiosSecure.post('parcel',data).then(res=>{
-        console.log('after send parcel',res.data)
+        console.log('after send parcel',res.data);
+        if(res.data.insertedId){
+            navigate('/dashboard/my-parcel')
+            Swal.fire({
+  position: "top-end",
+  icon: "success",
+  title: "Your work has been saved",
+  showConfirmButton: false,
+  timer: 1500
+});
+        }
     })
     // Swal.fire({
     //   title: "Deleted!",
