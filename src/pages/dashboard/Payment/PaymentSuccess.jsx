@@ -26,7 +26,7 @@ const PaymentSuccess = () => {
     return (
         <div>
             <h3 className='text-4xl font-bold'>Payment successfully</h3>
-            <p>Your Transaction Id:{paymentInfo. transcationId}</p>
+            <p>Your payment Transaction Id:{paymentInfo. transcationId}</p>
             <p>Your Trackng Id:{paymentInfo.trackingId}</p>
         </div>
     );
