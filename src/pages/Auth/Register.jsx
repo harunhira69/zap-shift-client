@@ -4,45 +4,65 @@ import useAuth from '../../hook/useAuth';
 import { Link, useLocation, useNavigate } from 'react-router';
 import SocialLogin from './SocialLogin';
 import axios from 'axios';
+import useAxiosSecue from '../../hook/useAxiosSecue';
+import { toast } from 'react-toastify';
 
 const Register = () => {
       const {register,handleSubmit,formState: { errors }} = useForm();
       const location = useLocation();
       const navigate = useNavigate();
+      const axiosSecure = useAxiosSecue();
+
 
       const {createUserEmail,  updateUserProfile} = useAuth()
 
-    const handleRegistration = (data)=>{
-        console.log('after register',data)
-        const profileImg = data.photo[0];
-        createUserEmail(data.email,data.password).then(res=>{
-            console.log(res.user)
-          
-        const formData = new FormData();
-        formData.append('image',profileImg)
+  const handleRegistration = (data) => {
+    const profileImg = data.photo[0];
 
-        const image_api = `https://api.imgbb.com/1/upload?expiration=600&key=${import.meta.env.VITE_image}`
+    createUserEmail(data.email, data.password)
+        .then(res => {
+          console.log(res.user)
+            // Upload photo to Imgbb
+            const formData = new FormData();
+            formData.append('image', profileImg);
 
-        axios.post(image_api,formData).then((res)=>{
-          console.log('after image upload',res.data.data.url)
-          const updateProfile = {
-            displayName : data.name,
-            photoURL : res.data.data.url,
-          }
-          updateUserProfile(updateProfile)
-          .then(()=>{
-            console.log('after update profile',res.data);
-            navigate(location?.state||'/')
-          })
-          .catch(err=>console.log(err))
+            const image_api = `https://api.imgbb.com/1/upload?expiration=600&key=${import.meta.env.VITE_image}`;
+
+            axios.post(image_api, formData)
+                .then(async (imgRes) => {
+
+                    const photoURL = imgRes.data.data.url;
+
+                    // update firebase user profile
+                    const updateInfo = {
+                        displayName: data.name,
+                        photoURL: photoURL,
+                    };
+
+                    await updateUserProfile(updateInfo);
+
+                    // save user into database
+                    const userInfo = {
+                        email: data.email,
+                        displayName: data.name,
+                        photoURL: photoURL,
+                    };
+
+                    axiosSecure.post('/users', userInfo)
+                        .then(res => {
+                            if (res.data.insertedId) {
+                              console.log('user created in db')
+                                toast.success('User created successfully');
+                                navigate(location?.state || '/');
+                            }
+                        })
+                        .catch(err => console.log(err));
+                })
+                .catch(err => console.log(err));
         })
-  
-  
+        .catch(err => console.error(err));
+};
 
-        }).catch(err => console.error(err));
-
-
-    }
     return (
        
             <div className="card bg-base-100 w-full mx-auto max-w-sm shrink-0 shadow-2xl">

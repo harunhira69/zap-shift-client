@@ -1,19 +1,40 @@
 import React from 'react';
 import useAuth from '../../hook/useAuth';
 import { useLocation, useNavigate } from 'react-router';
+import useAxiosSecue from '../../hook/useAxiosSecue';
 
 const SocialLogin = () => {
+    const axiosSecure = useAxiosSecue();
     const {handleGoogle} = useAuth()
     const location = useLocation();
     const navigate = useNavigate();
-    const handleGoogleSignIn = ()=>{
-     handleGoogle()
-     .then((res)=>{
-        console.log(res.user);
-        navigate(location?.state||'/')
-     })
-     .catch(err=>console.log(err))
-    }
+ const handleGoogleSignIn = () => {
+    handleGoogle()
+        .then((res) => {
+            const user = res.user;
+
+            const userInfo = {
+                email: user.email,
+                displayName: user.displayName,
+                photoURL: user.photoURL,
+            };
+
+            axiosSecure.post('/users', userInfo)
+                .then(dbRes => {
+                    console.log("google sign in response", dbRes.data);
+
+                    if (dbRes.data.insertedId) {
+                        console.log("user stored in DB");
+                    }
+
+                    // Navigate AFTER saving user
+                    navigate(location?.state || '/');
+                })
+                .catch(err => console.log(err));
+        })
+        .catch(err => console.log(err));
+};
+
     return (
         <div className='text-center pb-8'>
             <p className='my-2'>OR</p>
