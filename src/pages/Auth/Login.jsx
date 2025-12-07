@@ -20,7 +20,10 @@ const Login = () => {
     console.log(res.user);
     navigate(location?.state||'/')
   })
-  .catch(err=>console.log(err));
+  .catch(err=>{
+    console.log(err);
+    alert('Invalid email or password. Please try again.');
+  });
 
 
   }

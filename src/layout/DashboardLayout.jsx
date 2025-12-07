@@ -36,6 +36,7 @@ const DashboardLayout = () => {
         {/* dashboard link */}
         <li>
             <NavLink to='/dashboard/my-parcel'>My Parcel</NavLink>
+             <NavLink to='/dashboard/payment-history'>Payment History</NavLink>
         </li>
 
         {/* List item */}

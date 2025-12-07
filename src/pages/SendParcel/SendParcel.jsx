@@ -132,7 +132,7 @@ const receiverRegion = useWatch({
                         <input
                             type="text"
                             {...register('parcelName')}
-                            defaultValue={user.displayName}
+                         
                             className="input w-full"
                             placeholder="Parcel Name"
                         />

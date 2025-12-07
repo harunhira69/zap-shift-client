@@ -4,30 +4,44 @@ import useAxiosSecue from '../../../hook/useAxiosSecue';
 
 const PaymentSuccess = () => {
     const [searchParams] = useSearchParams();
-    const [paymentInfo, setPaymentInfo] = useState({})
+    const [paymentInfo, setPaymentInfo] = useState({});
     const sessionId = searchParams.get('session_id');
-    console.log(sessionId)
     const axiosSecure = useAxiosSecue();
 
     useEffect(() => {
         if (sessionId) {
-            axiosSecure.patch(`/verify-success-payment?session_id=${sessionId}`)
+            axiosSecure
+                .patch(`/verify-success-payment?session_id=${sessionId}`)
                 .then(res => {
-                    console.log(res.data)
-                    setPaymentInfo({
-                        transcationId: res.data.transactionId,
-                        trackingId:res.data.trackingId,
-
-                    })
+                    console.log("Verify Payment Response:", res.data);
+                    if (res.data.success) {
+                        setPaymentInfo({
+                            transactionId: res.data.transactionId, // fixed typo
+                            trackingId: res.data.trackingId,
+                        });
+                    } else {
+                        console.error("Payment verification failed:", res.data);
+                    }
                 })
+                .catch(err => {
+                    console.error("Payment verification error:", err);
+                });
         }
+    }, [axiosSecure, sessionId]);
 
-    }, [axiosSecure, sessionId])
     return (
-        <div>
-            <h3 className='text-4xl font-bold'>Payment successfully</h3>
-            <p>Your payment Transaction Id:{paymentInfo. transcationId}</p>
-            <p>Your Trackng Id:{paymentInfo.trackingId}</p>
+        <div className="p-8">
+            <h3 className="text-4xl font-bold mb-4">Payment Successful!</h3>
+            {paymentInfo.transactionId && (
+                <p className="mb-2">
+                    Your Payment Transaction ID: <span className="font-mono">{paymentInfo.transactionId}</span>
+                </p>
+            )}
+            {paymentInfo.trackingId && (
+                <p>
+                    Your Tracking ID: <span className="font-mono">{paymentInfo.trackingId}</span>
+                </p>
+            )}
         </div>
     );
 };
